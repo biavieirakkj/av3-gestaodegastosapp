@@ -637,4 +637,122 @@ public class FinanceiroRepository {
         }, callback);
     }
 
+    // ========================================
+    // ALTERAR FOTO DE PERFIL
+    // ========================================
+
+    public void alterarFotoPerfil(
+            String fotoUri,
+            Callback<Usuario> callback
+    ) {
+
+        executar(() -> db.runInTransaction(() -> {
+
+            Sessao sessao = db.sessaoDao()
+                    .buscarSessaoAtiva();
+
+            if (sessao == null) {
+                throw new IllegalStateException(
+                        "É necessário fazer login."
+                );
+            }
+
+            Usuario usuario = db.usuarioDao()
+                    .buscarPorId(sessao.getUsuarioId());
+
+            if (usuario == null) {
+                throw new IllegalStateException(
+                        "Usuário não encontrado."
+                );
+            }
+
+            if (fotoUri == null || fotoUri.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Imagem inválida."
+                );
+            }
+
+            usuario.setFotoUri(fotoUri);
+            db.usuarioDao().atualizar(usuario);
+
+            return usuario;
+
+        }), callback);
+    }
+
+
+    // Cadastra uma receita ou despesa do usuário logado.
+    public void registrarMovimentacao(
+            String descricao,
+            String tipo,
+            long valorCentavos,
+            Callback<Long> callback
+    ) {
+
+        executar(() -> {
+
+            if (descricao == null ||
+                    descricao.trim().isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Informe uma descrição."
+                );
+            }
+
+            if (!"RECEITA".equals(tipo) &&
+                    !"DESPESA".equals(tipo)) {
+                throw new IllegalArgumentException(
+                        "Tipo de movimentação inválido."
+                );
+            }
+
+            if (valorCentavos <= 0) {
+                throw new IllegalArgumentException(
+                        "O valor deve ser maior que zero."
+                );
+            }
+
+            if (valorCentavos > 100000000000L) {
+                throw new IllegalArgumentException(
+                        "Valor acima do limite permitido."
+                );
+            }
+
+            return db.runInTransaction(() -> {
+
+                Sessao sessao = db.sessaoDao()
+                        .buscarSessaoAtiva();
+
+                if (sessao == null) {
+                    throw new IllegalStateException(
+                            "Faça login novamente."
+                    );
+                }
+
+                Usuario usuario = db.usuarioDao()
+                        .buscarPorId(sessao.getUsuarioId());
+
+                if (usuario == null) {
+                    throw new IllegalStateException(
+                            "Usuário não encontrado."
+                    );
+                }
+
+                Movimentacao movimentacao =
+                        new Movimentacao(
+                                usuario.getId(),
+                                null,
+                                descricao.trim(),
+                                tipo,
+                                valorCentavos,
+                                System.currentTimeMillis()
+                        );
+
+                return db.movimentacaoDao()
+                        .inserir(movimentacao);
+            });
+
+        }, callback);
+    }
+
+
 }

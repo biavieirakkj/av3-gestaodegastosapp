@@ -84,4 +84,15 @@ public class AuthViewModel extends AndroidViewModel {
         );
     }
 
+    public void alterarFotoPerfil(
+            String fotoUri,
+            FinanceiroRepository.Callback<Usuario> callback
+    ) {
+
+        repository.alterarFotoPerfil(
+                fotoUri,
+                callback
+        );
+    }
+
 }

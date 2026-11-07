@@ -1,0 +1,96 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F5F7FB">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <Button
+            android:id="@+id/btnVoltarMovimentacoes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← Voltar"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Nova movimentação"
+            android:textSize="27sp"
+            android:textStyle="bold"
+            android:textColor="#17365D"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Adicione uma receita ou despesa."
+            android:textSize="16sp"
+            android:textColor="#64748B"/>
+
+        <RadioGroup
+            android:id="@+id/grupoTipoMovimentacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:orientation="horizontal"
+            android:checkedButton="@+id/radioDespesa">
+
+            <RadioButton
+                android:id="@+id/radioReceita"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Receita"/>
+
+            <RadioButton
+                android:id="@+id/radioDespesa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Despesa"/>
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/edtDescricaoMovimentacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Descrição"
+            android:inputType="textCapSentences"
+            android:singleLine="true"/>
+
+        <EditText
+            android:id="@+id/edtValorMovimentacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:hint="Valor em R$ (ex.: 85,90)"
+            android:inputType="numberDecimal"
+            android:singleLine="true"/>
+
+        <Button
+            android:id="@+id/btnSalvarMovimentacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Salvar movimentação"
+            android:enabled="false"/>
+
+        <ProgressBar
+            android:id="@+id/progressoMovimentacao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</ScrollView>
