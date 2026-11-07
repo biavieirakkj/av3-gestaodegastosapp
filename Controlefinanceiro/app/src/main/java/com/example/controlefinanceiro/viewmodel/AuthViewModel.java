@@ -67,4 +67,21 @@ public class AuthViewModel extends AndroidViewModel {
                 callback
         );
     }
+
+    public void editarPerfil(
+            String nome,
+            String email,
+            String senhaAtual,
+            String novaSenha,
+            FinanceiroRepository.Callback<Usuario> callback
+    ) {
+        repository.editarPerfil(
+                nome,
+                email,
+                senhaAtual,
+                novaSenha,
+                callback
+        );
+    }
+
 }

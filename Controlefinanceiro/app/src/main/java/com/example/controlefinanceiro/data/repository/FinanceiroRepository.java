@@ -513,4 +513,128 @@ public class FinanceiroRepository {
         }, callback);
     }
 
+
+    // ========================================
+    // EDITAR PERFIL E ALTERAR SENHA
+    // ========================================
+
+    public void editarPerfil(
+            String novoNome,
+            String novoEmail,
+            String senhaAtual,
+            String novaSenha,
+            Callback<Usuario> callback
+    ) {
+
+        executar(() -> {
+
+            if (novoNome == null ||
+                    novoNome.trim().isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Informe seu nome."
+                );
+            }
+
+            if (novoEmail == null ||
+                    !android.util.Patterns.EMAIL_ADDRESS
+                            .matcher(novoEmail.trim()).matches()) {
+                throw new IllegalArgumentException(
+                        "Informe um e-mail válido."
+                );
+            }
+
+            if (senhaAtual == null ||
+                    senhaAtual.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Informe sua senha atual."
+                );
+            }
+
+            boolean alterarSenha =
+                    novaSenha != null && !novaSenha.isEmpty();
+
+            if (alterarSenha && novaSenha.length() < 8) {
+                throw new IllegalArgumentException(
+                        "A nova senha precisa ter pelo menos 8 caracteres."
+                );
+            }
+
+            String emailNormalizado =
+                    novoEmail.trim().toLowerCase(
+                            java.util.Locale.ROOT
+                    );
+
+            // Consulta feita fora da thread principal.
+            Sessao sessao = db.sessaoDao()
+                    .buscarSessaoAtiva();
+
+            if (sessao == null) {
+                throw new IllegalStateException(
+                        "Sessão encerrada. Entre novamente."
+                );
+            }
+
+            Usuario usuario = db.usuarioDao()
+                    .buscarPorId(sessao.getUsuarioId());
+
+            if (usuario == null ||
+                    !SenhaUtils.verificarSenha(
+                            senhaAtual,
+                            usuario.getSenhaHash())) {
+                throw new IllegalArgumentException(
+                        "Senha atual incorreta."
+                );
+            }
+
+            // BCrypt executado na thread de trabalho.
+            String novoHash = alterarSenha
+                    ? SenhaUtils.gerarHash(novaSenha)
+                    : usuario.getSenhaHash();
+
+            // Atualização consistente, dentro de uma transação.
+            return db.runInTransaction(() -> {
+
+                Sessao sessaoAtual = db.sessaoDao()
+                        .buscarSessaoAtiva();
+
+                if (sessaoAtual == null ||
+                        sessaoAtual.getUsuarioId() != usuario.getId()) {
+                    throw new IllegalStateException(
+                            "Sessão alterada. Entre novamente."
+                    );
+                }
+
+                Usuario usuarioAtual = db.usuarioDao()
+                        .buscarPorId(usuario.getId());
+
+                if (usuarioAtual == null ||
+                        !usuarioAtual.getSenhaHash().equals(
+                                usuario.getSenhaHash())) {
+                    throw new IllegalStateException(
+                            "O perfil foi alterado. Tente novamente."
+                    );
+                }
+
+                Usuario outroUsuario = db.usuarioDao()
+                        .buscarPorEmail(emailNormalizado);
+
+                if (outroUsuario != null &&
+                        outroUsuario.getId() != usuarioAtual.getId()) {
+                    throw new IllegalArgumentException(
+                            "Este e-mail já está cadastrado."
+                    );
+                }
+
+                usuarioAtual.setNome(novoNome.trim());
+                usuarioAtual.setEmail(emailNormalizado);
+                usuarioAtual.setSenhaHash(novoHash);
+
+                db.usuarioDao().atualizar(usuarioAtual);
+
+                return usuarioAtual;
+            });
+
+        }, callback);
+    }
+
 }
