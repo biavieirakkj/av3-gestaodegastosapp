@@ -1,0 +1,138 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F5F7FB">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+
+        <ImageView
+            android:id="@+id/imgFotoPerfil"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:src="@android:drawable/ic_menu_camera"
+            android:scaleType="centerCrop"
+            android:contentDescription="Foto do perfil do usuário"/>
+
+        <Button
+            android:id="@+id/btnTirarFoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Tirar foto"/>
+
+        <Button
+            android:id="@+id/btnEscolherGaleria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Escolher da galeria"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Meu perfil"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#17365D"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Atualize seus dados pessoais"
+            android:textSize="16sp"
+            android:textColor="#64748B"/>
+
+        <EditText
+            android:id="@+id/edtNomePerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:hint="Nome completo"
+            android:inputType="textPersonName"
+            android:singleLine="true"
+            android:autofillHints="name"/>
+
+        <EditText
+            android:id="@+id/edtEmailPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="E-mail"
+            android:inputType="textEmailAddress"
+            android:singleLine="true"
+            android:autofillHints="emailAddress"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Segurança da conta"
+            android:textStyle="bold"
+            android:textSize="19sp"
+            android:textColor="#17365D"/>
+
+        <EditText
+            android:id="@+id/edtSenhaAtualPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Senha atual (obrigatória)"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:autofillHints="password"/>
+
+        <EditText
+            android:id="@+id/edtNovaSenhaPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Nova senha (opcional)"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:autofillHints="newPassword"/>
+
+        <EditText
+            android:id="@+id/edtConfirmarNovaSenhaPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Confirmar nova senha"
+            android:inputType="textPassword"
+            android:singleLine="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Se não quiser alterar a senha, deixe os dois campos de nova senha vazios."
+            android:textSize="14sp"
+            android:textColor="#64748B"/>
+
+        <Button
+            android:id="@+id/btnSalvarPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Salvar alterações"/>
+
+        <ProgressBar
+            android:id="@+id/progressoPerfil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</ScrollView>
