@@ -1,0 +1,64 @@
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="@color/cor_fundo">
+
+    <ImageView
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="Ícone do aplicativo Meu pé de meia"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/app_name"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/cor_texto"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Cuide do seu dinheiro e faça seus sonhos crescerem."
+        android:textSize="15sp"
+        android:textColor="@color/cor_receita"
+        android:gravity="center"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:indeterminateTint="@color/cor_receita"/>
+
+    <TextView
+        android:id="@+id/txtStatusSplash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="Verificando sua sessão..."
+        android:textSize="13sp"
+        android:textColor="@color/cor_receita"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/btnTentarNovamente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="Tentar novamente"
+        android:backgroundTint="@color/cor_botoes"
+        android:textColor="@color/cor_texto"
+        android:visibility="gone"/>
+
+</LinearLayout>

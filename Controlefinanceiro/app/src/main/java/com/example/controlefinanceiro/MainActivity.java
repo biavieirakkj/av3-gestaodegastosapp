@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.drawable.GradientDrawable;
 import com.example.controlefinanceiro.ui.categoria.CategoriasActivity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -363,6 +364,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     private void adicionarTituloHistorico(
             String titulo,
             int cor
@@ -371,7 +373,9 @@ public class MainActivity extends AppCompatActivity {
         TextView cabecalho = new TextView(this);
 
         cabecalho.setText(titulo);
-        cabecalho.setTextSize(19);
+
+        cabecalho.setTextSize(17);
+
         cabecalho.setTypeface(
                 null,
                 android.graphics.Typeface.BOLD
@@ -380,40 +384,103 @@ public class MainActivity extends AppCompatActivity {
         cabecalho.setTextColor(cor);
 
         cabecalho.setPadding(
-                12,
-                30,
-                12,
-                16
+                converterDp(4),
+                converterDp(20),
+                converterDp(4),
+                converterDp(12)
         );
 
         listaMovimentacoes.addView(cabecalho);
     }
 
+
+
     private void adicionarLinha(String texto, int cor) {
 
-        TextView linha = new TextView(this);
+        // Cria o card branco.
+        LinearLayout card = new LinearLayout(this);
 
-        linha.setText(texto);
-        linha.setTextSize(17);
-        linha.setTextColor(cor);
-        linha.setPadding(16, 22, 16, 22);
+        card.setOrientation(LinearLayout.VERTICAL);
 
-        listaMovimentacoes.addView(linha);
+        int espaco = converterDp(16);
 
-        View separador = new View(this);
-
-        separador.setBackgroundColor(
-                Color.rgb(220, 225, 232)
+        card.setPadding(
+                espaco,
+                espaco,
+                espaco,
+                espaco
         );
 
-        listaMovimentacoes.addView(
-                separador,
+        // Fundo branco com cantos arredondados.
+        GradientDrawable fundo = new GradientDrawable();
+
+        fundo.setColor(Color.WHITE);
+
+        fundo.setCornerRadius(converterDp(12));
+
+        card.setBackground(fundo);
+
+        // Espaçamento entre os cards.
+        LinearLayout.LayoutParams parametros =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        1
-                )
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        parametros.setMargins(
+                0,
+                converterDp(4),
+                0,
+                converterDp(10)
+        );
+
+        // Separa a descrição do valor e da data.
+        String[] partes = texto.split("\n", 2);
+
+        TextView descricao = new TextView(this);
+
+        descricao.setText(partes[0]);
+
+        descricao.setTextSize(16);
+
+        descricao.setTypeface(
+                null,
+                android.graphics.Typeface.BOLD
+        );
+
+        descricao.setTextColor(
+                getColor(R.color.cor_texto)
+        );
+
+        card.addView(descricao);
+
+        // Exibe valor e data com a cor da movimentação.
+        if (partes.length > 1) {
+
+            TextView detalhes = new TextView(this);
+
+            detalhes.setText(partes[1]);
+
+            detalhes.setTextSize(17);
+
+            detalhes.setTextColor(cor);
+
+            detalhes.setPadding(
+                    0,
+                    converterDp(8),
+                    0,
+                    0
+            );
+
+            card.addView(detalhes);
+        }
+
+        listaMovimentacoes.addView(
+                card,
+                parametros
         );
     }
+
 
     private String formatarMoeda(Long centavos) {
 
@@ -507,4 +574,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
+    private int converterDp(int valor) {
+
+        return (int) (
+                valor * getResources()
+                        .getDisplayMetrics().density
+                        + 0.5f
+        );
+    }
+
 }

@@ -245,7 +245,7 @@ public class LembreteReceiver extends BroadcastReceiver {
                         .setSmallIcon(
                                 android.R.drawable.ic_dialog_info
                         )
-                        .setContentTitle("Lembrete financeiro")
+                        .setContentTitle("Meu Pé de Meia 🍀")
                         .setContentText(mensagem)
                         .setStyle(
                                 new NotificationCompat.BigTextStyle()
