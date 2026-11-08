@@ -1,9 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ControleFinanceiro" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <style name="Base.Theme.ControleFinanceiro"
+        parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="colorPrimary">@color/cor_botoes</item>
+        <item name="colorPrimaryDark">@color/cor_receita</item>
+        <item name="colorAccent">@color/cor_receita</item>
+
     </style>
 
-    <style name="Theme.ControleFinanceiro" parent="Base.Theme.ControleFinanceiro" />
+    <style name="Theme.ControleFinanceiro"
+        parent="Base.Theme.ControleFinanceiro" />
+
 </resources>

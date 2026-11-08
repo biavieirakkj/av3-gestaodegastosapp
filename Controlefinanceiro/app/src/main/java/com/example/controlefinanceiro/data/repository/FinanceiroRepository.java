@@ -836,4 +836,137 @@ public class FinanceiroRepository {
 
         }, callback);
     }
+
+
+    public void criarCategoria(
+            String nome,
+            Callback<Long> callback
+    ) {
+
+        executar(() -> db.runInTransaction(() -> {
+
+            if (nome == null || nome.trim().isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Informe o nome da categoria."
+                );
+            }
+
+            if (nome.trim().length() > 50) {
+                throw new IllegalArgumentException(
+                        "Use no máximo 50 caracteres."
+                );
+            }
+
+            Sessao sessao = db.sessaoDao()
+                    .buscarSessaoAtiva();
+
+            if (sessao == null) {
+                throw new IllegalStateException(
+                        "Faça login novamente."
+                );
+            }
+
+            Usuario usuario = db.usuarioDao()
+                    .buscarPorId(sessao.getUsuarioId());
+
+            if (usuario == null) {
+                throw new IllegalStateException(
+                        "Usuário não encontrado."
+                );
+            }
+
+            List<Categoria> categorias =
+                    db.categoriaDao()
+                            .listarPorUsuario(usuario.getId())
+                            .getValue();
+
+            Categoria categoria = new Categoria(
+                    nome.trim(),
+                    usuario.getId()
+            );
+
+            return db.categoriaDao().inserir(categoria);
+
+        }), callback);
+    }
+
+
+    public void registrarMovimentacao(
+            String descricao,
+            String tipo,
+            long valorCentavos,
+            Integer categoriaId,
+            Callback<Long> callback
+    ) {
+
+        executar(() -> db.runInTransaction(() -> {
+
+            if (descricao == null ||
+                    descricao.trim().isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Informe uma descrição."
+                );
+            }
+
+            if (!"RECEITA".equals(tipo) &&
+                    !"DESPESA".equals(tipo)) {
+                throw new IllegalArgumentException(
+                        "Tipo inválido."
+                );
+            }
+
+            if (valorCentavos <= 0 ||
+                    valorCentavos > 100000000000L) {
+                throw new IllegalArgumentException(
+                        "Valor inválido."
+                );
+            }
+
+            Sessao sessao = db.sessaoDao()
+                    .buscarSessaoAtiva();
+
+            if (sessao == null) {
+                throw new IllegalStateException(
+                        "Faça login novamente."
+                );
+            }
+
+            Usuario usuario = db.usuarioDao()
+                    .buscarPorId(sessao.getUsuarioId());
+
+            if (usuario == null) {
+                throw new IllegalStateException(
+                        "Usuário não encontrado."
+                );
+            }
+
+            if (categoriaId != null) {
+
+                Categoria categoria = db.categoriaDao()
+                        .buscarPorId(
+                                categoriaId,
+                                usuario.getId()
+                        );
+
+                if (categoria == null) {
+                    throw new IllegalArgumentException(
+                            "Categoria inválida."
+                    );
+                }
+            }
+
+            Movimentacao movimentacao = new Movimentacao(
+                    usuario.getId(),
+                    categoriaId,
+                    descricao.trim(),
+                    tipo,
+                    valorCentavos,
+                    System.currentTimeMillis()
+            );
+
+            return db.movimentacaoDao().inserir(movimentacao);
+
+        }), callback);
+    }
+
 }

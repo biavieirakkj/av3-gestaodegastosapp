@@ -6,7 +6,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-
+import com.example.controlefinanceiro.data.entity.Categoria;
 import com.example.controlefinanceiro.data.entity.Movimentacao;
 import com.example.controlefinanceiro.data.repository.FinanceiroRepository;
 import com.example.controlefinanceiro.data.entity.Lembrete;
@@ -109,4 +109,44 @@ public class FinanceiroViewModel extends AndroidViewModel {
         return repository.listarLembretes(usuarioId);
     }
 
+    public void criarCategoria(
+            String nome,
+            FinanceiroRepository.Callback<Long> callback
+    ) {
+        repository.criarCategoria(nome, callback);
+    }
+
+    public LiveData<List<Categoria>> listarCategorias(
+            int usuarioId
+    ) {
+        return repository.listarCategorias(usuarioId);
+    }
+
+    public void registrarMovimentacao(
+            String descricao,
+            String tipo,
+            long valorCentavos,
+            Integer categoriaId,
+            FinanceiroRepository.Callback<Long> callback
+    ) {
+        repository.registrarMovimentacao(
+                descricao,
+                tipo,
+                valorCentavos,
+                categoriaId,
+                callback
+        );
+    }
+
+    public LiveData<List<Movimentacao>> listarPorPeriodo(
+            int usuarioId,
+            long inicio,
+            long fim
+    ) {
+        return repository.listarPorPeriodo(
+                usuarioId,
+                inicio,
+                fim
+        );
+    }
 }

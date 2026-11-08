@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F5F7FB">
+    android:background="@color/cor_fundo">
 
     <LinearLayout
         android:id="@+id/conteudoPrincipal"
@@ -60,7 +60,7 @@
             android:layout_marginTop="28dp"
             android:orientation="vertical"
             android:padding="22dp"
-            android:background="#E4EDF8">
+            android:background="#FFFFFF">
 
             <TextView
                 android:layout_width="match_parent"
@@ -78,7 +78,7 @@
                 android:text="R$ 0,00"
                 android:textSize="30sp"
                 android:textStyle="bold"
-                android:textColor="#17365D"/>
+                android:textColor="@color/cor_texto"/>
 
             <TextView
                 android:id="@+id/txtReceitas"
@@ -87,7 +87,7 @@
                 android:layout_marginTop="18dp"
                 android:text="Receitas: R$ 0,00"
                 android:textSize="16sp"
-                android:textColor="#16784B"/>
+                android:textColor="@color/cor_receita"/>
 
             <TextView
                 android:id="@+id/txtDespesas"
@@ -96,7 +96,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Despesas: R$ 0,00"
                 android:textSize="16sp"
-                android:textColor="#B43232"/>
+                android:textColor="@color/cor_despesa"/>
 
         </LinearLayout>
 
@@ -107,7 +107,7 @@
             android:text="Contas e vencimentos"
             android:textSize="21sp"
             android:textStyle="bold"
-            android:textColor="#17365D"/>
+            android:textColor="@color/cor_texto"/>
 
         <Button
             android:id="@+id/btnMeusLembretes"
@@ -121,17 +121,114 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Minhas movimentações"
+            android:text="Histórico Financeiro"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#17365D"/>
+            android:textColor="@color/cor_texto"/>
 
-        <Button
-            android:id="@+id/btnAdicionarMovimentacao"
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="+ Adicionar movimentação"/>
+            android:layout_marginTop="18dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/btnAdicionarMovimentacao"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/fundo_botao_home"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@android:drawable/ic_input_add"
+                    android:tint="@color/cor_texto"
+                    android:contentDescription="Adicionar movimentação"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Adicionar"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/cor_texto"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnCategorias"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/fundo_botao_home"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@android:drawable/ic_menu_sort_by_size"
+                    android:tint="@color/cor_texto"
+                    android:contentDescription="Categorias"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Categorias"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/cor_texto"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnRelatorios"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/fundo_botao_home"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@android:drawable/ic_menu_agenda"
+                    android:tint="@color/cor_texto"
+                    android:contentDescription="Relatórios"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Relatórios"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/cor_texto"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
 
         <LinearLayout
             android:id="@+id/listaMovimentacoesMain"
