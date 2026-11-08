@@ -27,7 +27,7 @@ import com.example.controlefinanceiro.data.entity.Sessao;
                 Lembrete.class,
                 Sessao.class
         },
-        version = 1,
+        version = 2,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -49,10 +49,12 @@ public abstract class AppDatabase extends RoomDatabase {
         if (INSTANCE == null) {
 
             INSTANCE = Room.databaseBuilder(
-                    context.getApplicationContext(),
-                    AppDatabase.class,
-                    "controle_financeiro_db"
-            ).build();
+                            context.getApplicationContext(),
+                            AppDatabase.class,
+                            "controle_financeiro_db"
+                    )
+                    .addMigrations(Migracoes.MIGRATION_1_2)
+                    .build();
         }
 
         return INSTANCE;

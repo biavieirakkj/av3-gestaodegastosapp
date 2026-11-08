@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 
 import com.example.controlefinanceiro.data.entity.Movimentacao;
 import com.example.controlefinanceiro.data.repository.FinanceiroRepository;
-
+import com.example.controlefinanceiro.data.entity.Lembrete;
 import java.util.List;
 
 public class FinanceiroViewModel extends AndroidViewModel {
@@ -81,4 +81,32 @@ public class FinanceiroViewModel extends AndroidViewModel {
     ) {
         return repository.totalDespesas(usuarioId);
     }
+
+    public void registrarLembrete(
+            String descricao,
+            long valorCentavos,
+            long dataHora,
+            boolean mensal,
+            int diaVencimento,
+            int diasAntes,
+            FinanceiroRepository.Callback<Long> callback
+    ) {
+
+        repository.registrarLembrete(
+                descricao,
+                valorCentavos,
+                dataHora,
+                mensal,
+                diaVencimento,
+                diasAntes,
+                callback
+        );
+    }
+
+    public LiveData<List<Lembrete>> listarLembretes(
+            int usuarioId
+    ) {
+        return repository.listarLembretes(usuarioId);
+    }
+
 }

@@ -24,7 +24,7 @@ import com.example.controlefinanceiro.ui.movimentacao.MovimentacoesActivity;
 import com.example.controlefinanceiro.ui.perfil.PerfilActivity;
 import com.example.controlefinanceiro.viewmodel.AuthViewModel;
 import com.example.controlefinanceiro.viewmodel.FinanceiroViewModel;
-
+import com.example.controlefinanceiro.ui.lembrete.LembretesActivity;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -57,6 +57,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        Button btnMeusLembretes =
+                findViewById(R.id.btnMeusLembretes);
+
+        btnMeusLembretes.setOnClickListener(v -> {
+
+            startActivity(new Intent(
+                    MainActivity.this,
+                    LembretesActivity.class
+            ));
+        });
 
         conteudoPrincipal =
                 findViewById(R.id.conteudoPrincipal);

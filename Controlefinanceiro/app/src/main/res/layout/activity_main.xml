@@ -103,6 +103,23 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:text="Contas e vencimentos"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textColor="#17365D"/>
+
+        <Button
+            android:id="@+id/btnMeusLembretes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Meus lembretes"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:text="Minhas movimentações"
             android:textSize="22sp"

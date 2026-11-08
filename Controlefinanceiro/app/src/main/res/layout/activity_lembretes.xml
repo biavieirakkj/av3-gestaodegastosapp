@@ -1,0 +1,141 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F5F7FB">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <Button
+            android:id="@+id/btnVoltarLembretes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← Voltar"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Meus lembretes"
+            android:textStyle="bold"
+            android:textSize="27sp"
+            android:textColor="#17365D"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Cadastre suas contas e vencimentos."
+            android:textSize="15sp"
+            android:textColor="#64748B"/>
+
+        <EditText
+            android:id="@+id/edtDescricaoLembrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:hint="Descrição (ex.: Aluguel)"
+            android:inputType="textCapSentences"
+            android:singleLine="true"/>
+
+        <EditText
+            android:id="@+id/edtValorLembrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Valor em R$ (ex.: 1200,00)"
+            android:inputType="numberDecimal"
+            android:singleLine="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="Frequência"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <RadioGroup
+            android:id="@+id/grupoFrequencia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:checkedButton="@+id/radioMensal">
+
+            <RadioButton
+                android:id="@+id/radioUnico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Uma vez"/>
+
+            <RadioButton
+                android:id="@+id/radioMensal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:text="Todo mês"/>
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnDataLembrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Escolher data de vencimento"/>
+
+        <Button
+            android:id="@+id/btnHoraLembrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Escolher horário do aviso"/>
+
+        <CheckBox
+            android:id="@+id/checkAvisarAntes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:checked="true"
+            android:text="Avisar um dia antes do vencimento"/>
+
+        <Button
+            android:id="@+id/btnSalvarLembrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:enabled="false"
+            android:text="Salvar lembrete"/>
+
+        <ProgressBar
+            android:id="@+id/progressoLembrete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Lembretes cadastrados"
+            android:textStyle="bold"
+            android:textSize="21sp"
+            android:textColor="#17365D"/>
+
+        <LinearLayout
+            android:id="@+id/listaLembretes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+</ScrollView>

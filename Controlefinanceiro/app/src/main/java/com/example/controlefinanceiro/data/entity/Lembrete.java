@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import androidx.room.ColumnInfo;
 
 @Entity(
         tableName = "lembretes",
@@ -33,6 +34,15 @@ public class Lembrete {
     private long dataHora;
 
     private boolean concluido;
+
+    @ColumnInfo(defaultValue = "0")
+    private boolean mensal;
+
+    @ColumnInfo(defaultValue = "0")
+    private int diaVencimento;
+
+    @ColumnInfo(defaultValue = "0")
+    private int diasAntes;
 
     public Lembrete(
             int usuarioId,
@@ -95,4 +105,30 @@ public class Lembrete {
     public void setConcluido(boolean concluido) {
         this.concluido = concluido;
     }
+
+
+    public boolean isMensal() {
+        return mensal;
+    }
+
+    public void setMensal(boolean mensal) {
+        this.mensal = mensal;
+    }
+
+    public int getDiaVencimento() {
+        return diaVencimento;
+    }
+
+    public void setDiaVencimento(int diaVencimento) {
+        this.diaVencimento = diaVencimento;
+    }
+
+    public int getDiasAntes() {
+        return diasAntes;
+    }
+
+    public void setDiasAntes(int diasAntes) {
+        this.diasAntes = diasAntes;
+    }
+
 }

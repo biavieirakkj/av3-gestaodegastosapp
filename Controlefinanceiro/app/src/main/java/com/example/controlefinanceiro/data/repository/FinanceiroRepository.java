@@ -755,4 +755,85 @@ public class FinanceiroRepository {
     }
 
 
+    public void registrarLembrete(
+            String descricao,
+            long valorCentavos,
+            long dataHora,
+            boolean mensal,
+            int diaVencimento,
+            int diasAntes,
+            Callback<Long> callback
+    ) {
+
+        executar(() -> {
+
+            if (descricao == null ||
+                    descricao.trim().isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Informe a descrição da conta."
+                );
+            }
+
+            if (valorCentavos < 0) {
+                throw new IllegalArgumentException(
+                        "O valor não pode ser negativo."
+                );
+            }
+
+            if (dataHora <= System.currentTimeMillis()) {
+                throw new IllegalArgumentException(
+                        "Escolha uma data futura."
+                );
+            }
+
+            if (diaVencimento < 1 || diaVencimento > 31) {
+                throw new IllegalArgumentException(
+                        "Dia de vencimento inválido."
+                );
+            }
+
+            if (diasAntes != 0 && diasAntes != 1) {
+                throw new IllegalArgumentException(
+                        "Antecedência inválida."
+                );
+            }
+
+            return db.runInTransaction(() -> {
+
+                Sessao sessao = db.sessaoDao()
+                        .buscarSessaoAtiva();
+
+                if (sessao == null) {
+                    throw new IllegalStateException(
+                            "Faça login novamente."
+                    );
+                }
+
+                Usuario usuario = db.usuarioDao()
+                        .buscarPorId(sessao.getUsuarioId());
+
+                if (usuario == null) {
+                    throw new IllegalStateException(
+                            "Usuário não encontrado."
+                    );
+                }
+
+                Lembrete lembrete = new Lembrete(
+                        usuario.getId(),
+                        descricao.trim(),
+                        valorCentavos,
+                        dataHora,
+                        false
+                );
+
+                lembrete.setMensal(mensal);
+                lembrete.setDiaVencimento(diaVencimento);
+                lembrete.setDiasAntes(diasAntes);
+
+                return db.lembreteDao()
+                        .inserir(lembrete);
+            });
+
+        }, callback);
+    }
 }

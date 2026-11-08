@@ -49,6 +49,10 @@
             android:name=".ui.movimentacao.MovimentacoesActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.lembrete.LembretesActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
