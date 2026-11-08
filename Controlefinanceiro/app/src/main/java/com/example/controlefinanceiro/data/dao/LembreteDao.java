@@ -32,4 +32,10 @@ public interface LembreteDao {
 
     @Query("SELECT * FROM lembretes WHERE usuarioId = :usuarioId AND concluido = 0 ORDER BY dataHora ASC")
     LiveData<List<Lembrete>> listarPendentes(int usuarioId);
+
+    @Query("SELECT * FROM lembretes " +
+            "WHERE usuarioId = :usuarioId " +
+            "AND concluido = 0")
+    List<Lembrete> listarParaAgendamento(int usuarioId);
+
 }

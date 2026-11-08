@@ -10,11 +10,12 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.example.controlefinanceiro.ui.categoria.CategoriasActivity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.lifecycle.ViewModelProvider;
-
+import com.example.controlefinanceiro.notificacao.AgendadorLembretes;
+import com.example.controlefinanceiro.ui.relatorio.RelatoriosActivity;
 import com.example.controlefinanceiro.data.entity.Movimentacao;
 import com.example.controlefinanceiro.data.entity.Sessao;
 import com.example.controlefinanceiro.data.entity.Usuario;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtReceitas;
     private TextView txtDespesas;
 
-    private Button btnAdicionar;
+    private LinearLayout btnAdicionar;
     private ImageButton btnOpcoes;
 
     private boolean observadoresConfigurados = false;
@@ -57,6 +58,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+
+        LinearLayout btnRelatorios = findViewById(R.id.btnRelatorios);
+
+        btnRelatorios.setOnClickListener(v -> {
+            startActivity(new Intent(
+                    MainActivity.this,
+                    RelatoriosActivity.class
+            ));
+        });
+
+
+        LinearLayout btnCategorias = findViewById(R.id.btnCategorias);
+
+        btnCategorias.setOnClickListener(v -> {
+            startActivity(new Intent(
+                    MainActivity.this,
+                    CategoriasActivity.class
+            ));
+        });
+
 
         Button btnMeusLembretes =
                 findViewById(R.id.btnMeusLembretes);
@@ -169,6 +191,10 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
 
+                        AgendadorLembretes.reagendarTodos(
+                                MainActivity.this
+                        );
+
                         txtBoasVindas.setText(
                                 "Olá, " + usuario.getNome() + "!"
                         );
@@ -221,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
                 .observe(this, this::mostrarHistorico);
     }
 
+
     private void mostrarHistorico(
             List<Movimentacao> movimentacoes
     ) {
@@ -232,44 +259,134 @@ public class MainActivity extends AppCompatActivity {
 
             adicionarLinha(
                     "Nenhuma movimentação cadastrada.",
-                    Color.DKGRAY
+                    getColor(R.color.cor_texto)
             );
+
             return;
         }
 
-        DateFormat formatoData = DateFormat.getDateInstance(
-                DateFormat.SHORT,
-                brasil
+        DateFormat formatoData =
+                DateFormat.getDateInstance(
+                        DateFormat.SHORT,
+                        brasil
+                );
+
+        // ====================================
+        // ENTRADAS DE DINHEIRO
+        // ====================================
+
+        adicionarTituloHistorico(
+                "↓ ENTRADAS",
+                getColor(R.color.cor_receita)
         );
+
+        boolean temReceitas = false;
 
         for (Movimentacao movimentacao : movimentacoes) {
 
-            boolean receita =
-                    "RECEITA".equals(movimentacao.getTipo());
+            if ("RECEITA".equals(movimentacao.getTipo())) {
 
-            String sinal = receita ? "+ " : "- ";
+                temReceitas = true;
 
-            String valor = formatarMoeda(
-                    movimentacao.getValorCentavos()
-            );
+                String valor = formatarMoeda(
+                        movimentacao.getValorCentavos()
+                );
 
-            String data = formatoData.format(
-                    new Date(movimentacao.getData())
-            );
+                String data = formatoData.format(
+                        new Date(movimentacao.getData())
+                );
 
-            String texto =
-                    movimentacao.getDescricao()
-                            + "\n"
-                            + sinal + valor
-                            + "  •  " + data;
+                String texto =
+                        movimentacao.getDescricao()
+                                + "\n+ " + valor
+                                + "  •  " + data;
+
+                adicionarLinha(
+                        texto,
+                        getColor(R.color.cor_receita)
+                );
+            }
+        }
+
+        if (!temReceitas) {
 
             adicionarLinha(
-                    texto,
-                    receita
-                            ? Color.rgb(22, 120, 75)
-                            : Color.rgb(180, 50, 50)
+                    "Nenhuma entrada cadastrada.",
+                    getColor(R.color.cor_texto)
             );
         }
+
+        // ====================================
+        // SAÍDAS DE DINHEIRO
+        // ====================================
+
+        adicionarTituloHistorico(
+                "↑ SAÍDAS",
+                getColor(R.color.cor_despesa)
+        );
+
+        boolean temDespesas = false;
+
+        for (Movimentacao movimentacao : movimentacoes) {
+
+            if ("DESPESA".equals(movimentacao.getTipo())) {
+
+                temDespesas = true;
+
+                String valor = formatarMoeda(
+                        movimentacao.getValorCentavos()
+                );
+
+                String data = formatoData.format(
+                        new Date(movimentacao.getData())
+                );
+
+                String texto =
+                        movimentacao.getDescricao()
+                                + "\n- " + valor
+                                + "  •  " + data;
+
+                adicionarLinha(
+                        texto,
+                        getColor(R.color.cor_despesa)
+                );
+            }
+        }
+
+        if (!temDespesas) {
+
+            adicionarLinha(
+                    "Nenhuma saída cadastrada.",
+                    getColor(R.color.cor_texto)
+            );
+        }
+    }
+
+
+    private void adicionarTituloHistorico(
+            String titulo,
+            int cor
+    ) {
+
+        TextView cabecalho = new TextView(this);
+
+        cabecalho.setText(titulo);
+        cabecalho.setTextSize(19);
+        cabecalho.setTypeface(
+                null,
+                android.graphics.Typeface.BOLD
+        );
+
+        cabecalho.setTextColor(cor);
+
+        cabecalho.setPadding(
+                12,
+                30,
+                12,
+                16
+        );
+
+        listaMovimentacoes.addView(cabecalho);
     }
 
     private void adicionarLinha(String texto, int cor) {

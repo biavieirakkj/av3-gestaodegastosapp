@@ -11,6 +11,14 @@ import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import com.example.controlefinanceiro.data.entity.Categoria;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -36,6 +44,11 @@ public class MovimentacoesActivity extends AppCompatActivity {
     private FinanceiroViewModel financeiroViewModel;
     private AuthViewModel authViewModel;
 
+    private Spinner spinnerCategoria;
+
+    private final List<Categoria> categorias =
+            new ArrayList<>();
+
     private boolean processando = false;
     private boolean sessaoValida = false;
 
@@ -44,6 +57,8 @@ public class MovimentacoesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_movimentacoes);
+
+        spinnerCategoria = findViewById(R.id.spinnerCategoria);
 
         edtDescricao =
                 findViewById(R.id.edtDescricaoMovimentacao);
@@ -120,6 +135,7 @@ public class MovimentacoesActivity extends AppCompatActivity {
 
                                         sessaoValida = true;
                                         btnSalvar.setEnabled(true);
+                                        carregarCategorias(usuario.getId());
                                     }
 
                                     @Override
@@ -196,10 +212,19 @@ public class MovimentacoesActivity extends AppCompatActivity {
 
         setProcessando(true);
 
+        Integer categoriaId = null;
+
+        int posicao = spinnerCategoria.getSelectedItemPosition();
+
+        if (posicao > 0 && posicao <= categorias.size()) {
+            categoriaId = categorias.get(posicao - 1).getId();
+        }
+
         financeiroViewModel.registrarMovimentacao(
                 descricao,
                 tipo,
                 valorCentavos,
+                categoriaId,
                 new FinanceiroRepository.Callback<Long>() {
 
                     @Override
@@ -214,9 +239,6 @@ public class MovimentacoesActivity extends AppCompatActivity {
                                 "Movimentação salva!",
                                 Toast.LENGTH_SHORT
                         ).show();
-
-                        // Volta à MainActivity.
-                        // O LiveData atualiza o histórico.
                         finish();
                     }
 
@@ -274,4 +296,41 @@ public class MovimentacoesActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
+    private void carregarCategorias(int usuarioId) {
+
+        financeiroViewModel.listarCategorias(usuarioId)
+                .observe(this, lista -> {
+
+                    categorias.clear();
+
+                    List<String> nomes = new ArrayList<>();
+
+                    nomes.add("Sem categoria");
+
+                    if (lista != null) {
+
+                        categorias.addAll(lista);
+
+                        for (Categoria categoria : categorias) {
+                            nomes.add(categoria.getNome());
+                        }
+                    }
+
+                    ArrayAdapter<String> adapter =
+                            new ArrayAdapter<>(
+                                    this,
+                                    android.R.layout.simple_spinner_item,
+                                    nomes
+                            );
+
+                    adapter.setDropDownViewResource(
+                            android.R.layout.simple_spinner_dropdown_item
+                    );
+
+                    spinnerCategoria.setAdapter(adapter);
+                });
+    }
+
 }

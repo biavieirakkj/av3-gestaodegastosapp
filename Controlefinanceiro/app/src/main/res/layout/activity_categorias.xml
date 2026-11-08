@@ -1,0 +1,86 @@
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/cor_fundo">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <Button
+            android:id="@+id/btnVoltarCategorias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← Voltar"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Minhas categorias"
+            android:textSize="27sp"
+            android:textStyle="bold"
+            android:textColor="@color/cor_texto"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Organize suas receitas e despesas."
+            android:textSize="15sp"
+            android:textColor="@color/cor_receita"/>
+
+        <EditText
+            android:id="@+id/edtNomeCategoria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:hint="Nome da categoria (ex.: Alimentação)"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            android:maxLength="50"/>
+
+        <Button
+            android:id="@+id/btnSalvarCategoria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Adicionar categoria"
+            android:enabled="false"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
+
+        <ProgressBar
+            android:id="@+id/progressoCategoria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Categorias cadastradas"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textColor="@color/cor_texto"/>
+
+        <LinearLayout
+            android:id="@+id/listaCategorias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+</ScrollView>

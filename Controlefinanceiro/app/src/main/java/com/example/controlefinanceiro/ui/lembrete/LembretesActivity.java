@@ -15,6 +15,17 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+
+import com.example.controlefinanceiro.notificacao.AgendadorLembretes;
+import com.example.controlefinanceiro.notificacao.LembreteReceiver;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -55,11 +66,32 @@ public class LembretesActivity extends AppCompatActivity {
     private boolean processando = false;
     private boolean sessaoValida = false;
 
+
+    private final ActivityResultLauncher<String>
+            permissaoNotificacao = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            permitida -> {
+
+                if (!permitida) {
+
+                    Toast.makeText(
+                            this,
+                            "Os lembretes serão salvos, mas " +
+                                    "as notificações estão desativadas.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            }
+    );
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_lembretes);
+
+        configurarNotificacoes();
 
         edtDescricao = findViewById(
                 R.id.edtDescricaoLembrete
@@ -376,6 +408,10 @@ public class LembretesActivity extends AppCompatActivity {
 
                         setProcessando(false);
 
+                        AgendadorLembretes.reagendarTodos(
+                                LembretesActivity.this
+                        );
+
                         edtDescricao.setText("");
                         edtValor.setText("");
 
@@ -512,4 +548,23 @@ public class LembretesActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    private void configurarNotificacoes() {
+
+        LembreteReceiver.criarCanal(this);
+
+        if (Build.VERSION.SDK_INT >= 33) {
+
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED) {
+
+                permissaoNotificacao.launch(
+                        Manifest.permission.POST_NOTIFICATIONS
+                );
+            }
+        }
+    }
+
 }
