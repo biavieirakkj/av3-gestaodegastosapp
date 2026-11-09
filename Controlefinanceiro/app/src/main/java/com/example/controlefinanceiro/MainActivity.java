@@ -304,7 +304,8 @@ public class MainActivity extends AppCompatActivity {
 
                 adicionarLinha(
                         texto,
-                        getColor(R.color.cor_receita)
+                        getColor(R.color.cor_receita),
+                        movimentacao
                 );
             }
         }
@@ -349,7 +350,8 @@ public class MainActivity extends AppCompatActivity {
 
                 adicionarLinha(
                         texto,
-                        getColor(R.color.cor_despesa)
+                        getColor(R.color.cor_despesa),
+                        movimentacao
                 );
             }
         }
@@ -482,6 +484,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void adicionarLinha(
+            String texto,
+            int cor,
+            Movimentacao movimentacao
+    ) {
+
+        // Reaproveita o método que já cria os cards.
+        int quantidadeAntes = listaMovimentacoes.getChildCount();
+
+        adicionarLinha(texto, cor);
+
+        if (listaMovimentacoes.getChildCount()
+                <= quantidadeAntes) {
+            return;
+        }
+
+        View card = listaMovimentacoes.getChildAt(
+                listaMovimentacoes.getChildCount() - 1
+        );
+
+        card.setClickable(true);
+        card.setFocusable(true);
+
+        card.setOnClickListener(v ->
+                mostrarOpcoesMovimentacao(movimentacao)
+        );
+    }
+
+
+
     private String formatarMoeda(Long centavos) {
 
         long valor = centavos != null ? centavos : 0L;
@@ -583,6 +615,94 @@ public class MainActivity extends AppCompatActivity {
                         .getDisplayMetrics().density
                         + 0.5f
         );
+    }
+
+
+    private void mostrarOpcoesMovimentacao(
+            Movimentacao movimentacao
+    ) {
+
+        String[] opcoes = {
+                "Editar movimentação",
+                "Excluir movimentação"
+        };
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(movimentacao.getDescricao())
+                .setItems(opcoes, (dialog, opcao) -> {
+
+                    if (opcao == 0) {
+                        Intent intent = new Intent(
+                                this,
+                                MovimentacoesActivity.class
+                        );
+
+                        intent.putExtra(
+                                "movimentacao_id",
+                                movimentacao.getId()
+                        );
+
+                        startActivity(intent);
+
+                    } else {
+                        confirmarExclusao(movimentacao);
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void confirmarExclusao(
+            Movimentacao movimentacao
+    ) {
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Excluir movimentação?")
+                .setMessage(
+                        "Deseja excluir \"" +
+                                movimentacao.getDescricao() +
+                                "\"? Essa ação não pode ser desfeita."
+                )
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Excluir", (dialog, which) -> {
+
+                    financeiroViewModel.excluirMovimentacao(
+                            movimentacao.getId(),
+                            new FinanceiroRepository.Callback<Void>() {
+
+                                @Override
+                                public void onSucesso(Void resultado) {
+
+                                    if (isFinishing() || isDestroyed()) {
+                                        return;
+                                    }
+
+                                    Toast.makeText(
+                                            MainActivity.this,
+                                            "Movimentação excluída!",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+
+                                @Override
+                                public void onErro(Exception erro) {
+
+                                    if (isFinishing() || isDestroyed()) {
+                                        return;
+                                    }
+
+                                    Toast.makeText(
+                                            MainActivity.this,
+                                            erro.getMessage() != null
+                                                    ? erro.getMessage()
+                                                    : "Erro ao excluir.",
+                                            Toast.LENGTH_LONG
+                                    ).show();
+                                }
+                            }
+                    );
+                })
+                .show();
     }
 
 }

@@ -46,7 +46,7 @@ public class FinanceiroRepository {
         void onErro(Exception erro);
     }
 
-    // Método auxiliar para executar operações em background.
+    // Metodo auxiliar para executar operações em background.
     private <T> void executar(
             Callable<T> operacao,
             Callback<T> callback
@@ -275,35 +275,127 @@ public class FinanceiroRepository {
         );
     }
 
+
     public void atualizarMovimentacao(
             Movimentacao movimentacao,
             Callback<Void> callback
     ) {
+        executar(() -> db.runInTransaction(() -> {
 
-        executar(() -> {
+            if (movimentacao == null) {
+                throw new IllegalArgumentException(
+                        "Movimentação inválida."
+                );
+            }
 
-            db.movimentacaoDao()
-                    .atualizar(movimentacao);
+            Sessao sessao = db.sessaoDao()
+                    .buscarSessaoAtiva();
+
+            if (sessao == null) {
+                throw new IllegalStateException(
+                        "Faça login novamente."
+                );
+            }
+
+            int usuarioId = sessao.getUsuarioId();
+
+            // Busca somente uma movimentação pertencente
+            // ao usuário que está autenticado.
+            Movimentacao original = db.movimentacaoDao()
+                    .buscarPorId(movimentacao.getId(), usuarioId);
+
+            if (original == null) {
+                throw new IllegalArgumentException(
+                        "Movimentação não encontrada."
+                );
+            }
+
+            if (movimentacao.getDescricao() == null ||
+                    movimentacao.getDescricao().trim().isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Informe uma descrição."
+                );
+            }
+
+            if (!"RECEITA".equals(movimentacao.getTipo()) &&
+                    !"DESPESA".equals(movimentacao.getTipo())) {
+                throw new IllegalArgumentException(
+                        "Tipo de movimentação inválido."
+                );
+            }
+
+            if (movimentacao.getValorCentavos() <= 0 ||
+                    movimentacao.getValorCentavos() > 100000000000L) {
+                throw new IllegalArgumentException(
+                        "Valor inválido."
+                );
+            }
+
+            Integer categoriaId = movimentacao.getCategoriaId();
+
+            if (categoriaId != null) {
+                Categoria categoria = db.categoriaDao()
+                        .buscarPorId(categoriaId, usuarioId);
+
+                if (categoria == null) {
+                    throw new IllegalArgumentException(
+                            "Categoria inválida."
+                    );
+                }
+            }
+
+            // Atualiza apenas os campos permitidos.
+            original.setDescricao(
+                    movimentacao.getDescricao().trim()
+            );
+            original.setTipo(movimentacao.getTipo());
+            original.setValorCentavos(
+                    movimentacao.getValorCentavos()
+            );
+            original.setCategoriaId(categoriaId);
+            original.setData(movimentacao.getData());
+
+            db.movimentacaoDao().atualizar(original);
 
             return null;
 
-        }, callback);
+        }), callback);
     }
 
     public void excluirMovimentacao(
-            Movimentacao movimentacao,
+            int movimentacaoId,
             Callback<Void> callback
     ) {
+        executar(() -> db.runInTransaction(() -> {
 
-        executar(() -> {
+            Sessao sessao = db.sessaoDao()
+                    .buscarSessaoAtiva();
 
-            db.movimentacaoDao()
-                    .excluir(movimentacao);
+            if (sessao == null) {
+                throw new IllegalStateException(
+                        "Faça login novamente."
+                );
+            }
+
+            Movimentacao movimentacao = db.movimentacaoDao()
+                    .buscarPorId(
+                            movimentacaoId,
+                            sessao.getUsuarioId()
+                    );
+
+            if (movimentacao == null) {
+                throw new IllegalArgumentException(
+                        "Movimentação não encontrada."
+                );
+            }
+
+            db.movimentacaoDao().excluir(movimentacao);
 
             return null;
 
-        }, callback);
+        }), callback);
     }
+
 
     // ========================================
     // RESUMO FINANCEIRO
@@ -965,6 +1057,163 @@ public class FinanceiroRepository {
             );
 
             return db.movimentacaoDao().inserir(movimentacao);
+
+        }), callback);
+    }
+
+
+    public void buscarMovimentacao(
+            int movimentacaoId,
+            Callback<Movimentacao> callback
+    ) {
+        executar(() -> db.runInTransaction(() -> {
+
+            Sessao sessao = db.sessaoDao()
+                    .buscarSessaoAtiva();
+
+            if (sessao == null) {
+                throw new IllegalStateException(
+                        "Faça login novamente."
+                );
+            }
+
+            Movimentacao movimentacao =
+                    db.movimentacaoDao().buscarPorId(
+                            movimentacaoId,
+                            sessao.getUsuarioId()
+                    );
+
+            if (movimentacao == null) {
+                throw new IllegalArgumentException(
+                        "Movimentação não encontrada."
+                );
+            }
+
+            return movimentacao;
+
+        }), callback);
+    }
+
+
+    public void editarLembreteSeguro(
+            Lembrete dados,
+            Callback<Lembrete> callback
+    ) {
+        executar(() -> db.runInTransaction(() -> {
+
+            if (dados == null ||
+                    dados.getDescricao() == null ||
+                    dados.getDescricao().trim().isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Informe a descrição do lembrete."
+                );
+            }
+
+            if (dados.getValorCentavos() < 0 ||
+                    dados.getDiaVencimento() < 1 ||
+                    dados.getDiaVencimento() > 31 ||
+                    (dados.getDiasAntes() != 0 &&
+                            dados.getDiasAntes() != 1)) {
+
+                throw new IllegalArgumentException(
+                        "Dados do lembrete inválidos."
+                );
+            }
+
+            java.util.Calendar aviso =
+                    java.util.Calendar.getInstance();
+
+            aviso.setTimeInMillis(dados.getDataHora());
+            aviso.add(
+                    java.util.Calendar.DAY_OF_MONTH,
+                    -dados.getDiasAntes()
+            );
+
+            if (aviso.getTimeInMillis()
+                    <= System.currentTimeMillis()) {
+                throw new IllegalArgumentException(
+                        "O aviso deve ser em uma data futura."
+                );
+            }
+
+            Sessao sessao = db.sessaoDao()
+                    .buscarSessaoAtiva();
+
+            if (sessao == null) {
+                throw new IllegalStateException(
+                        "Faça login novamente."
+                );
+            }
+
+            Lembrete original = db.lembreteDao()
+                    .buscarParaEdicao(
+                            dados.getId(),
+                            sessao.getUsuarioId()
+                    );
+
+            if (original == null) {
+                throw new IllegalArgumentException(
+                        "Lembrete não encontrado."
+                );
+            }
+
+            original.setDescricao(
+                    dados.getDescricao().trim()
+            );
+            original.setValorCentavos(
+                    dados.getValorCentavos()
+            );
+            original.setDataHora(
+                    dados.getDataHora()
+            );
+            original.setMensal(
+                    dados.isMensal()
+            );
+            original.setDiaVencimento(
+                    dados.getDiaVencimento()
+            );
+            original.setDiasAntes(
+                    dados.getDiasAntes()
+            );
+            original.setConcluido(false);
+
+            db.lembreteDao().atualizar(original);
+
+            return original;
+
+        }), callback);
+    }
+
+    public void apagarLembreteSeguro(
+            int lembreteId,
+            Callback<Void> callback
+    ) {
+        executar(() -> db.runInTransaction(() -> {
+
+            Sessao sessao = db.sessaoDao()
+                    .buscarSessaoAtiva();
+
+            if (sessao == null) {
+                throw new IllegalStateException(
+                        "Faça login novamente."
+                );
+            }
+
+            Lembrete lembrete = db.lembreteDao()
+                    .buscarParaEdicao(
+                            lembreteId,
+                            sessao.getUsuarioId()
+                    );
+
+            if (lembrete == null) {
+                throw new IllegalArgumentException(
+                        "Lembrete não encontrado."
+                );
+            }
+
+            db.lembreteDao().excluir(lembrete);
+
+            return null;
 
         }), callback);
     }

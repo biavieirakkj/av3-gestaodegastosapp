@@ -38,4 +38,12 @@ public interface LembreteDao {
             "AND concluido = 0")
     List<Lembrete> listarParaAgendamento(int usuarioId);
 
+    @Query("SELECT * FROM lembretes " +
+            "WHERE id = :lembreteId " +
+            "AND usuarioId = :usuarioId LIMIT 1")
+    Lembrete buscarParaEdicao(
+            int lembreteId,
+            int usuarioId
+    );
+
 }

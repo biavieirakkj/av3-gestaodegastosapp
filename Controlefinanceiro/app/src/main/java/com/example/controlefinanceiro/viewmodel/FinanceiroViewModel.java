@@ -149,4 +149,45 @@ public class FinanceiroViewModel extends AndroidViewModel {
                 fim
         );
     }
+
+
+    // ========================================
+    // EDITAR MOVIMENTAÇÃO
+    // ========================================
+
+    public void atualizarMovimentacao(
+            Movimentacao movimentacao,
+            FinanceiroRepository.Callback<Void> callback
+    ) {
+        repository.atualizarMovimentacao(
+                movimentacao,
+                callback
+        );
+    }
+
+    // ========================================
+    // EXCLUIR MOVIMENTAÇÃO
+    // ========================================
+
+    public void excluirMovimentacao(
+            int movimentacaoId,
+            FinanceiroRepository.Callback<Void> callback
+    ) {
+        repository.excluirMovimentacao(
+                movimentacaoId,
+                callback
+        );
+    }
+
+
+    public void buscarMovimentacao(
+            int movimentacaoId,
+            FinanceiroRepository.Callback<Movimentacao> callback
+    ) {
+        repository.buscarMovimentacao(
+                movimentacaoId,
+                callback
+        );
+    }
+
 }

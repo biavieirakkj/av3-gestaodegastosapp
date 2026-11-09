@@ -93,6 +93,17 @@
 
 
         <Button
+            android:id="@+id/btnDataMovimentacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Alterar data"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"
+            android:visibility="gone"/>
+
+
+        <Button
             android:id="@+id/btnSalvarMovimentacao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

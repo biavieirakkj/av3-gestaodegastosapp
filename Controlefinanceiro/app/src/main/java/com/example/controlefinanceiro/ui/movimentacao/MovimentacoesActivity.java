@@ -14,6 +14,14 @@ import android.widget.Toast;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import android.app.DatePickerDialog;
+
+import com.example.controlefinanceiro.data.entity.Movimentacao;
+
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import com.example.controlefinanceiro.data.entity.Categoria;
 
 import java.util.ArrayList;
@@ -51,12 +59,42 @@ public class MovimentacoesActivity extends AppCompatActivity {
 
     private boolean processando = false;
     private boolean sessaoValida = false;
+    private int movimentacaoIdEmEdicao = -1;
+
+    private Movimentacao movimentacaoOriginal;
+
+    private Integer categoriaPendente;
+
+    private Button btnDataMovimentacao;
+
+    private final Calendar dataEdicao =
+            Calendar.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_movimentacoes);
+
+        movimentacaoIdEmEdicao = getIntent().getIntExtra(
+                "movimentacao_id",
+                -1
+        );
+
+        btnDataMovimentacao = findViewById(
+                R.id.btnDataMovimentacao
+        );
+
+        movimentacaoIdEmEdicao = getIntent().getIntExtra(
+                "movimentacao_id",
+                -1
+        );
+
+        btnDataMovimentacao = findViewById(
+                R.id.btnDataMovimentacao
+        );
+
 
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
 
@@ -71,6 +109,9 @@ public class MovimentacoesActivity extends AppCompatActivity {
 
         btnSalvar =
                 findViewById(R.id.btnSalvarMovimentacao);
+        if (movimentacaoIdEmEdicao > 0) {
+            btnSalvar.setText("Salvar alterações");
+        }
 
         btnVoltar =
                 findViewById(R.id.btnVoltarMovimentacoes);
@@ -90,6 +131,10 @@ public class MovimentacoesActivity extends AppCompatActivity {
 
         btnSalvar.setOnClickListener(
                 v -> salvarMovimentacao()
+        );
+
+        btnDataMovimentacao.setOnClickListener(
+                v -> escolherDataEdicao()
         );
 
         verificarSessao();
@@ -134,8 +179,17 @@ public class MovimentacoesActivity extends AppCompatActivity {
                                         }
 
                                         sessaoValida = true;
-                                        btnSalvar.setEnabled(true);
+
+                                        btnSalvar.setEnabled(
+                                                movimentacaoIdEmEdicao <= 0
+                                        );
+
                                         carregarCategorias(usuario.getId());
+
+                                        if (movimentacaoIdEmEdicao > 0) {
+                                            carregarMovimentacaoParaEdicao();
+                                        }
+
                                     }
 
                                     @Override
@@ -219,6 +273,78 @@ public class MovimentacoesActivity extends AppCompatActivity {
         if (posicao > 0 && posicao <= categorias.size()) {
             categoriaId = categorias.get(posicao - 1).getId();
         }
+
+
+        if (movimentacaoIdEmEdicao > 0) {
+
+            if (movimentacaoOriginal == null) {
+                setProcessando(false);
+
+                Toast.makeText(
+                        this,
+                        "Movimentação ainda não carregada.",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+
+            Movimentacao editada = new Movimentacao(
+                    movimentacaoOriginal.getUsuarioId(),
+                    categoriaId,
+                    descricao,
+                    tipo,
+                    valorCentavos,
+                    dataEdicao.getTimeInMillis()
+            );
+
+            editada.setId(
+                    movimentacaoOriginal.getId()
+            );
+
+            financeiroViewModel.atualizarMovimentacao(
+                    editada,
+                    new FinanceiroRepository.Callback<Void>() {
+
+                        @Override
+                        public void onSucesso(Void resultado) {
+
+                            if (isFinishing() || isDestroyed()) {
+                                return;
+                            }
+
+                            Toast.makeText(
+                                    MovimentacoesActivity.this,
+                                    "Movimentação atualizada!",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            finish();
+                        }
+
+                        @Override
+                        public void onErro(Exception erro) {
+
+                            if (isFinishing() || isDestroyed()) {
+                                return;
+                            }
+
+                            setProcessando(false);
+
+                            Toast.makeText(
+                                    MovimentacoesActivity.this,
+                                    erro.getMessage() != null
+                                            ? erro.getMessage()
+                                            : "Erro ao atualizar.",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                    }
+            );
+
+            return;
+        }
+
 
         financeiroViewModel.registrarMovimentacao(
                 descricao,
@@ -330,7 +456,134 @@ public class MovimentacoesActivity extends AppCompatActivity {
                     );
 
                     spinnerCategoria.setAdapter(adapter);
+                        if (movimentacaoIdEmEdicao > 0
+                                && movimentacaoOriginal != null) {
+                            selecionarCategoriaPendente();
+                    }
                 });
+    }
+
+    private void carregarMovimentacaoParaEdicao() {
+
+        financeiroViewModel.buscarMovimentacao(
+                movimentacaoIdEmEdicao,
+                new FinanceiroRepository.Callback<Movimentacao>() {
+
+                    @Override
+                    public void onSucesso(Movimentacao movimentacao) {
+
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+
+                        movimentacaoOriginal = movimentacao;
+
+                        edtDescricao.setText(
+                                movimentacao.getDescricao()
+                        );
+
+                        String valor = BigDecimal.valueOf(
+                                movimentacao.getValorCentavos(),
+                                2
+                        ).toPlainString().replace('.', ',');
+
+                        edtValor.setText(valor);
+
+                        grupoTipo.check(
+                                "RECEITA".equals(
+                                        movimentacao.getTipo()
+                                )
+                                        ? R.id.radioReceita
+                                        : R.id.radioDespesa
+                        );
+
+                        categoriaPendente =
+                                movimentacao.getCategoriaId();
+
+                        selecionarCategoriaPendente();
+
+                        dataEdicao.setTimeInMillis(
+                                movimentacao.getData()
+                        );
+
+                        btnDataMovimentacao.setVisibility(
+                                View.VISIBLE
+                        );
+
+                        atualizarTextoData();
+
+                        btnSalvar.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onErro(Exception erro) {
+
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+
+                        Toast.makeText(
+                                MovimentacoesActivity.this,
+                                erro.getMessage() != null
+                                        ? erro.getMessage()
+                                        : "Erro ao carregar movimentação.",
+                                Toast.LENGTH_LONG
+                        ).show();
+
+                        finish();
+                    }
+                }
+        );
+    }
+
+    private void selecionarCategoriaPendente() {
+
+        if (categoriaPendente == null) {
+            spinnerCategoria.setSelection(0);
+            return;
+        }
+
+        for (int i = 0; i < categorias.size(); i++) {
+
+            if (categorias.get(i).getId()
+                    == categoriaPendente) {
+
+                spinnerCategoria.setSelection(i + 1);
+                return;
+            }
+        }
+    }
+
+    private void escolherDataEdicao() {
+
+        new DatePickerDialog(
+                this,
+                (view, ano, mes, dia) -> {
+
+                    dataEdicao.set(Calendar.YEAR, ano);
+                    dataEdicao.set(Calendar.MONTH, mes);
+                    dataEdicao.set(Calendar.DAY_OF_MONTH, dia);
+
+                    atualizarTextoData();
+                },
+                dataEdicao.get(Calendar.YEAR),
+                dataEdicao.get(Calendar.MONTH),
+                dataEdicao.get(Calendar.DAY_OF_MONTH)
+        ).show();
+    }
+
+    private void atualizarTextoData() {
+
+        SimpleDateFormat formato = new SimpleDateFormat(
+                "dd/MM/yyyy",
+                new Locale("pt", "BR")
+        );
+
+        btnDataMovimentacao.setText(
+                "Data: " + formato.format(
+                        dataEdicao.getTime()
+                )
+        );
     }
 
 }
