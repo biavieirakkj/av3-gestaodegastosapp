@@ -53,13 +53,12 @@ public class LembretesActivity extends AppCompatActivity {
     private RadioGroup grupoFrequencia;
     private CheckBox checkAvisarAntes;
     private LinearLayout lista;
-
+    private Lembrete lembreteEmEdicao = null;
+    private int usuarioLogadoId = -1;
     private AuthViewModel authViewModel;
     private FinanceiroViewModel financeiroViewModel;
-
     private final Calendar dataEscolhida =
             Calendar.getInstance();
-
     private final Locale brasil =
             new Locale("pt", "BR");
 
@@ -258,9 +257,11 @@ public class LembretesActivity extends AppCompatActivity {
                                         }
 
                                         sessaoValida = true;
+                                        usuarioLogadoId = usuario.getId();
                                         btnSalvar.setEnabled(true);
 
                                         observarLembretes(usuario.getId());
+
                                     }
 
                                     @Override
@@ -390,6 +391,79 @@ public class LembretesActivity extends AppCompatActivity {
 
         setProcessando(true);
 
+
+        if (lembreteEmEdicao != null) {
+
+            Lembrete editado = new Lembrete(
+                    usuarioLogadoId,
+                    descricao,
+                    valorCentavos,
+                    primeiroVencimento.getTimeInMillis(),
+                    false
+            );
+
+            editado.setId(lembreteEmEdicao.getId());
+            editado.setMensal(mensal);
+            editado.setDiaVencimento(diaVencimento);
+            editado.setDiasAntes(diasAntes);
+
+            financeiroViewModel.editarLembreteSeguro(
+                    editado,
+                    new FinanceiroRepository.Callback<Lembrete>() {
+
+                        @Override
+                        public void onSucesso(Lembrete atualizado) {
+
+                            if (isFinishing() || isDestroyed()) {
+                                return;
+                            }
+
+                            // Cancela o aviso agendado anteriormente.
+                            AgendadorLembretes.cancelar(
+                                    LembretesActivity.this,
+                                    atualizado.getId()
+                            );
+
+                            // Agenda o novo horário.
+                            AgendadorLembretes.agendar(
+                                    LembretesActivity.this,
+                                    atualizado
+                            );
+
+                            limparEdicaoLembrete();
+                            setProcessando(false);
+
+                            Toast.makeText(
+                                    LembretesActivity.this,
+                                    "Lembrete atualizado!",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+
+                        @Override
+                        public void onErro(Exception erro) {
+
+                            if (isFinishing() || isDestroyed()) {
+                                return;
+                            }
+
+                            setProcessando(false);
+
+                            Toast.makeText(
+                                    LembretesActivity.this,
+                                    erro.getMessage() != null
+                                            ? erro.getMessage()
+                                            : "Erro ao atualizar lembrete.",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                    }
+            );
+
+            return;
+        }
+
+
         financeiroViewModel.registrarLembrete(
                 descricao,
                 valorCentavos,
@@ -492,7 +566,7 @@ public class LembretesActivity extends AppCompatActivity {
                     + "\nPróximo vencimento: " + data
                     + "\n" + antecedencia;
 
-            adicionarLinha(texto);
+            adicionarLinha(texto, lembrete);
         }
     }
 
@@ -520,6 +594,32 @@ public class LembretesActivity extends AppCompatActivity {
                 )
         );
     }
+
+
+    private void adicionarLinha(
+            String texto,
+            Lembrete lembrete
+    ) {
+        int quantidadeAntes = lista.getChildCount();
+
+        adicionarLinha(texto);
+
+        if (lista.getChildCount() <= quantidadeAntes) {
+            return;
+        }
+
+        View item = lista.getChildAt(quantidadeAntes);
+
+        item.setClickable(true);
+        item.setFocusable(true);
+
+        item.setOnClickListener(v -> {
+            if (!processando) {
+                mostrarOpcoesLembrete(lembrete);
+            }
+        });
+    }
+
 
     private void setProcessando(boolean valor) {
 
@@ -566,5 +666,154 @@ public class LembretesActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    private void mostrarOpcoesLembrete(
+            Lembrete lembrete
+    ) {
+        String[] opcoes = {
+                "Editar lembrete",
+                "Excluir lembrete"
+        };
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(lembrete.getDescricao())
+                .setItems(opcoes, (dialog, opcao) -> {
+
+                    if (opcao == 0) {
+                        iniciarEdicao(lembrete);
+                    } else {
+                        confirmarExclusaoLembrete(lembrete);
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void iniciarEdicao(
+            Lembrete lembrete
+    ) {
+        if (processando || !sessaoValida ||
+                usuarioLogadoId != lembrete.getUsuarioId()) {
+            return;
+        }
+
+        lembreteEmEdicao = lembrete;
+
+        edtDescricao.setText(
+                lembrete.getDescricao()
+        );
+
+        edtValor.setText(
+                BigDecimal.valueOf(
+                        lembrete.getValorCentavos(), 2
+                ).toPlainString().replace('.', ',')
+        );
+
+        grupoFrequencia.check(
+                lembrete.isMensal()
+                        ? R.id.radioMensal
+                        : R.id.radioUnico
+        );
+
+        checkAvisarAntes.setChecked(
+                lembrete.getDiasAntes() == 1
+        );
+
+        dataEscolhida.setTimeInMillis(
+                lembrete.getDataHora()
+        );
+
+        atualizarBotoesDataHora();
+
+        btnSalvar.setText("Salvar alterações");
+
+        edtDescricao.requestFocus();
+
+        Toast.makeText(
+                this,
+                "Altere os dados e toque em Salvar alterações.",
+                Toast.LENGTH_LONG
+        ).show();
+    }
+
+    private void confirmarExclusaoLembrete(
+            Lembrete lembrete
+    ) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Excluir lembrete?")
+                .setMessage(
+                        "Deseja excluir \"" +
+                                lembrete.getDescricao() +
+                                "\"? O aviso agendado também será cancelado."
+                )
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Excluir", (dialog, which) -> {
+
+                    setProcessando(true);
+
+                    financeiroViewModel.apagarLembreteSeguro(
+                            lembrete.getId(),
+                            new FinanceiroRepository.Callback<Void>() {
+
+                                @Override
+                                public void onSucesso(Void resultado) {
+
+                                    if (isFinishing() || isDestroyed()) {
+                                        return;
+                                    }
+
+                                    AgendadorLembretes.cancelar(
+                                            LembretesActivity.this,
+                                            lembrete.getId()
+                                    );
+
+                                    if (lembreteEmEdicao != null &&
+                                            lembreteEmEdicao.getId()
+                                                    == lembrete.getId()) {
+                                        limparEdicaoLembrete();
+                                    }
+
+                                    setProcessando(false);
+
+                                    Toast.makeText(
+                                            LembretesActivity.this,
+                                            "Lembrete excluído!",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+
+                                @Override
+                                public void onErro(Exception erro) {
+
+                                    if (isFinishing() || isDestroyed()) {
+                                        return;
+                                    }
+
+                                    setProcessando(false);
+
+                                    Toast.makeText(
+                                            LembretesActivity.this,
+                                            erro.getMessage() != null
+                                                    ? erro.getMessage()
+                                                    : "Erro ao excluir lembrete.",
+                                            Toast.LENGTH_LONG
+                                    ).show();
+                                }
+                            }
+                    );
+                })
+                .show();
+    }
+
+    private void limparEdicaoLembrete() {
+        lembreteEmEdicao = null;
+
+        edtDescricao.setText("");
+        edtValor.setText("");
+
+        btnSalvar.setText("Salvar lembrete");
+    }
+
 
 }

@@ -190,4 +190,25 @@ public class FinanceiroViewModel extends AndroidViewModel {
         );
     }
 
+
+    public void editarLembreteSeguro(
+            Lembrete lembrete,
+            FinanceiroRepository.Callback<Lembrete> callback
+    ) {
+        repository.editarLembreteSeguro(
+                lembrete,
+                callback
+        );
+    }
+
+    public void apagarLembreteSeguro(
+            int lembreteId,
+            FinanceiroRepository.Callback<Void> callback
+    ) {
+        repository.apagarLembreteSeguro(
+                lembreteId,
+                callback
+        );
+    }
+
 }
