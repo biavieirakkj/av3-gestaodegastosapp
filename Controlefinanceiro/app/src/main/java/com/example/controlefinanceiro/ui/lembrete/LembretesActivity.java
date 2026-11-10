@@ -576,14 +576,14 @@ public class LembretesActivity extends AppCompatActivity {
 
         item.setText(texto);
         item.setTextSize(16);
-        item.setTextColor(Color.rgb(23, 54, 93));
+        item.setTextColor(getColor(R.color.cor_texto));
         item.setPadding(16, 22, 16, 22);
 
         lista.addView(item);
 
         View divisor = new View(this);
         divisor.setBackgroundColor(
-                Color.rgb(220, 225, 232)
+                getColor(R.color.cor_botoes)
         );
 
         lista.addView(

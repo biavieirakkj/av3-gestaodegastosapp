@@ -15,7 +15,9 @@
             android:id="@+id/btnVoltarLembretes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="← Voltar"/>
+            android:text="← Voltar"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -24,7 +26,7 @@
             android:text="Meus lembretes"
             android:textStyle="bold"
             android:textSize="27sp"
-            android:textColor="#17365D"/>
+            android:textColor="@color/cor_texto"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -32,7 +34,7 @@
             android:layout_marginTop="8dp"
             android:text="Cadastre suas contas e vencimentos."
             android:textSize="15sp"
-            android:textColor="#64748B"/>
+            android:textColor="@color/cor_texto"/>
 
         <EditText
             android:id="@+id/edtDescricaoLembrete"
@@ -41,7 +43,7 @@
             android:layout_marginTop="26dp"
             android:hint="Descrição (ex.: Aluguel)"
             android:inputType="textCapSentences"
-            android:singleLine="true"/>
+            android:singleLine="true" />
 
         <EditText
             android:id="@+id/edtValorLembrete"
@@ -58,7 +60,8 @@
             android:layout_marginTop="22dp"
             android:text="Frequência"
             android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textColor="@color/cor_texto"/>
 
         <RadioGroup
             android:id="@+id/grupoFrequencia"
@@ -71,14 +74,18 @@
                 android:id="@+id/radioUnico"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Uma vez"/>
+                android:text="Uma vez"
+                android:buttonTint="@color/cor_botoes"
+                android:textColor="@color/cor_texto"/>
 
             <RadioButton
                 android:id="@+id/radioMensal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
-                android:text="Todo mês"/>
+                android:text="Todo mês"
+                android:buttonTint="@color/cor_botoes"
+                android:textColor="@color/cor_texto"/>
 
         </RadioGroup>
 
@@ -87,14 +94,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:text="Escolher data de vencimento"/>
+            android:text="Escolher data de vencimento"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <Button
             android:id="@+id/btnHoraLembrete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Escolher horário do aviso"/>
+            android:text="Escolher horário do aviso"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <CheckBox
             android:id="@+id/checkAvisarAntes"
@@ -102,7 +113,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:checked="true"
-            android:text="Avisar um dia antes do vencimento"/>
+            android:text="Avisar um dia antes do vencimento"
+            android:buttonTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <Button
             android:id="@+id/btnSalvarLembrete"
@@ -110,7 +123,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:enabled="false"
-            android:text="Salvar lembrete"/>
+            android:text="Salvar lembrete"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <ProgressBar
             android:id="@+id/progressoLembrete"
@@ -127,14 +142,14 @@
             android:text="Lembretes cadastrados"
             android:textStyle="bold"
             android:textSize="21sp"
-            android:textColor="#17365D"/>
+            android:textColor="@color/cor_texto"/>
 
         <LinearLayout
             android:id="@+id/listaLembretes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
 
     </LinearLayout>
 

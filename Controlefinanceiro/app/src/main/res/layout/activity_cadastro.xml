@@ -19,9 +19,9 @@
             android:layout_height="wrap_content"
             android:text="Criar minha conta"
             android:textSize="28sp"
-            android:textColor="#17365D"
             android:textStyle="bold"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="@color/cor_texto"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:layout_marginTop="8dp"
             android:text="Preencha os dados para começar"
             android:textSize="16sp"
-            android:textColor="#64748B"
+            android:textColor="@color/cor_texto"
             android:gravity="center"/>
 
         <EditText
@@ -80,14 +80,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="26dp"
-            android:text="Cadastrar"/>
+            android:text="Cadastrar"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <Button
             android:id="@+id/btnVoltarLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Já tenho uma conta"/>
+            android:text="Já tenho uma conta"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto" />
 
         <ProgressBar
             android:id="@+id/progressoCadastro"

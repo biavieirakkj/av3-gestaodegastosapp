@@ -35,7 +35,7 @@
             android:layout_marginTop="8dp"
             android:text="Organize suas receitas e despesas."
             android:textSize="15sp"
-            android:textColor="@color/cor_receita"/>
+            android:textColor="@color/cor_texto"/>
 
         <EditText
             android:id="@+id/edtNomeCategoria"

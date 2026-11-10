@@ -30,7 +30,7 @@
         android:layout_marginTop="10dp"
         android:text="Cuide do seu dinheiro e faça seus sonhos crescerem."
         android:textSize="15sp"
-        android:textColor="@color/cor_receita"
+        android:textColor="@color/cor_texto"
         android:gravity="center"/>
 
     <ProgressBar
@@ -47,7 +47,7 @@
         android:layout_marginTop="14dp"
         android:text="Verificando sua sessão..."
         android:textSize="13sp"
-        android:textColor="@color/cor_receita"
+        android:textColor="@color/cor_texto"
         android:gravity="center"/>
 
     <Button

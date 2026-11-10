@@ -27,14 +27,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Tirar foto"/>
+            android:text="Tirar foto"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <Button
             android:id="@+id/btnEscolherGaleria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Escolher da galeria"/>
+            android:text="Escolher da galeria"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -42,7 +46,7 @@
             android:text="Meu perfil"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="#17365D"/>
+            android:textColor="@color/cor_texto"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -50,7 +54,7 @@
             android:layout_marginTop="8dp"
             android:text="Atualize seus dados pessoais"
             android:textSize="16sp"
-            android:textColor="#64748B"/>
+            android:textColor="@color/cor_texto"/>
 
         <EditText
             android:id="@+id/edtNomePerfil"
@@ -79,7 +83,7 @@
             android:text="Segurança da conta"
             android:textStyle="bold"
             android:textSize="19sp"
-            android:textColor="#17365D"/>
+            android:textColor="@color/cor_texto"/>
 
         <EditText
             android:id="@+id/edtSenhaAtualPerfil"
@@ -116,14 +120,16 @@
             android:layout_marginTop="12dp"
             android:text="Se não quiser alterar a senha, deixe os dois campos de nova senha vazios."
             android:textSize="14sp"
-            android:textColor="#64748B"/>
+            android:textColor="@color/cor_texto"/>
 
         <Button
             android:id="@+id/btnSalvarPerfil"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:text="Salvar alterações"/>
+            android:text="Salvar alterações"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <ProgressBar
             android:id="@+id/progressoPerfil"

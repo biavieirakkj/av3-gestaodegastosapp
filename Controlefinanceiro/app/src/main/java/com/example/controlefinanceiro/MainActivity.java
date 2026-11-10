@@ -33,6 +33,7 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import androidx.appcompat.app.AppCompatDelegate;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -416,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
         // Fundo branco com cantos arredondados.
         GradientDrawable fundo = new GradientDrawable();
 
-        fundo.setColor(Color.WHITE);
+        fundo.setColor(getColor(R.color.cor_card));
 
         fundo.setCornerRadius(converterDp(12));
 
@@ -527,7 +528,20 @@ public class MainActivity extends AppCompatActivity {
         PopupMenu menu = new PopupMenu(this, ancora);
 
         menu.getMenu().add(0, 1, 0, "Meu perfil");
-        menu.getMenu().add(0, 2, 1, "Sair");
+
+        boolean escuro =
+                AppCompatDelegate.getDefaultNightMode()
+                        == AppCompatDelegate.MODE_NIGHT_YES;
+
+        menu.getMenu().add(
+                0,
+                3,
+                1,
+                escuro ? "☀️ Modo claro" : "🌙 Modo escuro"
+        );
+
+        menu.getMenu().add(0, 2, 2, "Sair");
+
 
         menu.setOnMenuItemClickListener(item -> {
 
@@ -540,6 +554,32 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             }
+
+
+            if (item.getItemId() == 3) {
+
+                boolean modoEscuroAtual =
+                        AppCompatDelegate.getDefaultNightMode()
+                                == AppCompatDelegate.MODE_NIGHT_YES;
+
+                int novoModo = escuro
+                        ? AppCompatDelegate.MODE_NIGHT_NO
+                        : AppCompatDelegate.MODE_NIGHT_YES;
+
+                getSharedPreferences(
+                        "preferencias_aparencia",
+                        MODE_PRIVATE
+                ).edit()
+                        .putInt("modo_noturno", novoModo)
+                        .apply();
+
+                AppCompatDelegate.setDefaultNightMode(
+                        novoModo
+                );
+
+                return true;
+            }
+
 
             if (item.getItemId() == 2) {
 

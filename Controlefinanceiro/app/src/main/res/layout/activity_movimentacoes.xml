@@ -15,7 +15,9 @@
             android:id="@+id/btnVoltarMovimentacoes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="← Voltar"/>
+            android:text="← Voltar"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -24,7 +26,7 @@
             android:text="Nova movimentação"
             android:textSize="27sp"
             android:textStyle="bold"
-            android:textColor="#17365D"/>
+            android:textColor="@color/cor_texto"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -32,7 +34,7 @@
             android:layout_marginTop="8dp"
             android:text="Adicione uma receita ou despesa."
             android:textSize="16sp"
-            android:textColor="#64748B"/>
+            android:textColor="@color/cor_texto"/>
 
         <RadioGroup
             android:id="@+id/grupoTipoMovimentacao"
@@ -46,14 +48,18 @@
                 android:id="@+id/radioReceita"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Receita"/>
+                android:text="Receita"
+                android:buttonTint="@color/cor_botoes"
+                android:textColor="@color/cor_texto"/>
 
             <RadioButton
                 android:id="@+id/radioDespesa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="Despesa"/>
+                android:text="Despesa"
+                android:buttonTint="@color/cor_botoes"
+                android:textColor="@color/cor_texto"/>
 
         </RadioGroup>
 
@@ -109,7 +115,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:text="Salvar movimentação"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <ProgressBar
             android:id="@+id/progressoMovimentacao"

@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Controle Financeiro"
-            android:textColor="#17365D"
+            android:textColor="@color/cor_texto"
             android:textStyle="bold"
             android:textSize="30sp"
             android:gravity="center"/>
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Organize seu dinheiro com facilidade"
-            android:textColor="#64748B"
+            android:textColor="@color/cor_texto"
             android:textSize="16sp"
             android:gravity="center"/>
 
@@ -61,7 +61,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:text="Entrar"
-            android:contentDescription="Entrar na minha conta"/>
+            android:contentDescription="Entrar na minha conta"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto"/>
 
         <Button
             android:id="@+id/btnIrCadastro"
@@ -69,7 +71,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Criar uma conta"
-            android:contentDescription="Abrir a tela de cadastro"/>
+            android:contentDescription="Abrir a tela de cadastro"
+            android:backgroundTint="@color/cor_botoes"
+            android:textColor="@color/cor_texto" />
 
         <ProgressBar
             android:id="@+id/progressoLogin"
