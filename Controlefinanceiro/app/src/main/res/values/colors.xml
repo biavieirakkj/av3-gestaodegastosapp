@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="cor_despesa">#DA2C38</color>
+    <color name="cor_despesa">#f26a8d</color>
     <color name="cor_receita">#0a9396</color>
     <color name="cor_fundo">#D5F2E3</color>
     <color name="cor_botoes">#73BA9B</color>
